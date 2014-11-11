@@ -7,5 +7,4 @@ function setupSpencer
     res = calllib('dynamixel', 'dxl_initialize', DEFAULT_PORTNUM, DEFAULT_BAUDNUM);
     msgid = 'MATLAB:dispatcher:nameConflict';
     warning('off', msgid);
-    run('C:\Users\Spencer\Documents\Lab3GitHub\METR4202-Dynamixel-Code\Lab3\rvctools\startup_rvc.m');
 end

@@ -1,13 +1,17 @@
 function dropit(id)
 %Centre angle of the base motor
-move_dynamixel_direct(id, 0);
-pause(0.5);
-move_dynamixel_direct(id, 600);
-pause(0.5)
-move_dynamixel_direct(id, 200);
-pause(0.5);
-move_dynamixel_direct(id, 600);
+calllib('dynamixel', 'dxl_write_word', id, 30, 0);
+while(calllib('dynamixel', 'dxl_read_word', 4, 46)>0);
+pause(0.1)
+end
+calllib('dynamixel', 'dxl_write_word', id, 30, 3000);
+while(calllib('dynamixel', 'dxl_read_word', 4, 46)>0);
+pause(0.1)
+end
+calllib('dynamixel', 'dxl_write_word', id, 30, 0);
+while(calllib('dynamixel', 'dxl_read_word', 4, 46)>0);
+pause(0.1)
+end
+calllib('dynamixel', 'dxl_write_word', id, 30, 3000);
 
-pause(1);
-move_dynamixel_direct(id, 2500);    
 end

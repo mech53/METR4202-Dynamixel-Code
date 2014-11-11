@@ -1,4 +1,12 @@
-function [ H ] = Untitled2( A )
+function [ H ] = GoToPos( A )
+speeds = 256;
+
+while(speeds>0)
+    calllib('dynamixel', 'dxl_read_word', 1, 46);
+    speeds = (calllib('dynamixel', 'dxl_read_word', 1, 46)+calllib('dynamixel', 'dxl_read_word', 2, 46)+ ...
+        calllib('dynamixel', 'dxl_read_word', 3, 46)+calllib('dynamixel', 'dxl_read_word', 4, 46));
+end
+run('C:\Users\Spencer\Documents\Lab3GitHub\METR4202-Dynamixel-Code\Lab3\rvctools\startup_rvc.m');
 L1 = Link('d', 0, 'a', 15, 'alpha', 0);
 L2 = Link('d', 0, 'a', 11.5, 'alpha', 0);
 bot = SerialLink([L1 L2], 'name', 'peter2')
@@ -21,6 +29,6 @@ p1 = bot.ikine(T,q,M);
 % bot.plot(p1)
  
 H=p1.*(180/(pi))
-
+rmpath('C:\Users\Spencer\Documents\Lab3GitHub\METR4202-Dynamixel-Code\Lab3\rvctools\robot');
 end
 

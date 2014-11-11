@@ -1,5 +1,7 @@
 function [ H ] = Untitled2( A )
-DEBUG = 0;
+%% This function finds the angles that ELBOW1 and ELBOW2 need to be at to
+%%return to the 'calibration point' from point A.
+
 L1 = Link('d', 0, 'a', 15, 'alpha', 0);
 L2 = Link('d', 0, 'a', 11.5, 'alpha', 0);
 bot = SerialLink([L1 L2], 'name', 'peter2')
@@ -19,11 +21,21 @@ T4 = transl(15, 0, 0);	% and destination
 T = ctraj(T3, T4, 2); % compute a Cartesian path
 p2 = bot.ikine(T,q,M); 
 
-if DEBUG == 1
-    bot.plot(p2)
-end
 
 H=p2.*(180/(pi))
+
+%% Once this function finishes a new command will be sent to the motor, to 
+%%stop this from happening while the motor is already moving this section 
+%%waits for the motors to all be still.
+
+speeds = 256;
+
+while(speeds>0) 
+    calllib('dynamixel', 'dxl_read_word', 1, 46);
+    speeds = (calllib('dynamixel', 'dxl_read_word', 1, 46)+calllib('dynamixel', 'dxl_read_word', 2, 46)+ ...
+        calllib('dynamixel', 'dxl_read_word', 3, 46)+calllib('dynamixel', 'dxl_read_word', 4, 46));
+end
+
 
 end
 

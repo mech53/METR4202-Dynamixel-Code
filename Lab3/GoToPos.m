@@ -1,11 +1,12 @@
 function [ H ] = GoToPos( A )
-speeds = 256;
+%% This function finds the angles that ELBOW1 and ELBOW2 need to be at to
+%%reach point A.
 
-while(speeds>0)
-    calllib('dynamixel', 'dxl_read_word', 1, 46);
-    speeds = (calllib('dynamixel', 'dxl_read_word', 1, 46)+calllib('dynamixel', 'dxl_read_word', 2, 46)+ ...
-        calllib('dynamixel', 'dxl_read_word', 3, 46)+calllib('dynamixel', 'dxl_read_word', 4, 46));
-end
+%% Finds the angles needed for the motor to move to the A position.
+
+%There is a conflit between the dynamixel library and the rvctools library,
+%this readds the rvctools library for use, while it is removed at the end
+%of this function.
 run('C:\Users\Spencer\Documents\Lab3GitHub\METR4202-Dynamixel-Code\Lab3\rvctools\startup_rvc.m');
 L1 = Link('d', 0, 'a', 15, 'alpha', 0);
 L2 = Link('d', 0, 'a', 11.5, 'alpha', 0);
@@ -30,5 +31,19 @@ p1 = bot.ikine(T,q,M);
  
 H=p1.*(180/(pi))
 rmpath('C:\Users\Spencer\Documents\Lab3GitHub\METR4202-Dynamixel-Code\Lab3\rvctools\robot');
+
+%% Once this function finishes a new command will be sent to the motor, to 
+%%stop this from happening while the motor is already moving this section 
+%%waits for the motors to all be still.
+
+speeds = 256;
+
+while(speeds>0) 
+    calllib('dynamixel', 'dxl_read_word', 1, 46);
+    speeds = (calllib('dynamixel', 'dxl_read_word', 1, 46)+calllib('dynamixel', 'dxl_read_word', 2, 46)+ ...
+        calllib('dynamixel', 'dxl_read_word', 3, 46)+calllib('dynamixel', 'dxl_read_word', 4, 46));
+end
+
+
 end
 

@@ -9,19 +9,19 @@ n = order(1);
 sortedOrder = [1 order(2:7)];
 sortedOrder = [sortedOrder; 2 order(8:13)];
 
-if n => 3
+if n >= 3
     sortedOrder = [sortedOrder; 3 order(14:19)];
 end
 
-if n => 4
+if n >= 4
     sortedOrder = [sortedOrder; 4 order(20:25)];
 end
 
-if n => 5
+if n >= 5
     sortedOrder = [sortedOrder; 5 order(26:29)];    
 end
 
-sortedOrder = sortrows(sortedOrder,-7)
+sortedOrder = sortrows(sortedOrder,-7);
 
 
 PISTON = 1;
@@ -42,7 +42,7 @@ clf
 L1 = Link('d', 0, 'a', 10, 'alpha', 0);
 L2 = Link('d', 0, 'a', 10, 'alpha', pi/2);
 %L3 = Link('d', 0, 'a', 10, 'alpha', 0);
-bot = SerialLink([L1 L2], 'name', 'peter2')
+bot = SerialLink([L1 L2], 'name', 'peter2');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 state = 1; %model is created
@@ -79,7 +79,7 @@ for i = 1:order(1)
     switch State
         case 1
             %Find next cup to complete
-            cup = sortedOrder(i,:)
+            cup = sortedOrder(i,:);
             
             state = 2;
         case 2
@@ -110,34 +110,43 @@ for i = 1:order(1)
                     
                 case 1
                     %Go to Coffee
-                    move_dynamixel_steps(GoToPos([x_cof, y_cof]));
-                    disp(['Please drop coffee!'])
+                    move_dynamixel_steps(GoToPos([x_cof, y_cof])); 
+                    %GoToPos returns the angles needed for move_dynamixel_steps 
+                    
+                    disp('Please drop coffee!')
                     pause(5)
                     move_dynamixel_steps(ReturnToPos([x_cof, y_cof]));
                     condimentFlag = 0;
                 case 2
                     %Go to Tea
                     move_dynamixel_steps(GoToPos([x_tea, y_tea]));
-                    disp(['Please drop tea!'])
+                    %GoToPos returns the angles needed for move_dynamixel_steps
+                    
+                    disp('Please drop tea!')
                     pause(5)
                     move_dynamixel_steps(ReturnToPos([x_tea, y_tea]));
                     condimentFlag = 0;
                 case 3
                     %Go to Sugar
                     move_dynamixel_steps(GoToPos([x_sug, y_sug]));
-                    disp(['Please drop sugar!'])
+                    %GoToPos returns the angles needed for move_dynamixel_steps
+                    
+                    disp('Please drop sugar!')
                     pause(5)
                     move_dynamixel_steps(ReturnToPos([x_sug, y_sug]));
+                    %GoToPos returns the angles needed for move_dynamixel_steps
+                    
                     condimentFlag = 0;
             end
             state = 4;
+            
         case 4
             %%  REVISE THIS VOSS AND CODY
             %Locate selected cup
-            if selectedCup = 0
+            if selectedCup == 0
                 for j = 1:order(1)
                     if visibleCups(j,2) == cup(2)
-                        selectedCup = visibleCups(j,:)
+                        selectedCup = visibleCups(j,:);
                         break
                     end
                 end
@@ -155,7 +164,7 @@ for i = 1:order(1)
             %   Drop the condiment in the cup
             move_dynamixel_steps(ReturnToPos([x, y]));
 
-            if cup(3)+cup(4)+cup(5) = 0
+            if cup(3)+cup(4)+cup(5) == 0
                 state = 6;
             else
                 state = 2;

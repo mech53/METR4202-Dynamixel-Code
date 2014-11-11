@@ -1,4 +1,5 @@
 function [ H ] = Untitled2( A )
+DEBUG = 0;
 L1 = Link('d', 0, 'a', 15, 'alpha', 0);
 L2 = Link('d', 0, 'a', 11.5, 'alpha', 0);
 bot = SerialLink([L1 L2], 'name', 'peter2')
@@ -15,10 +16,12 @@ end
 
 T3 = transl(A(2), A(1), 0);  % define the start point
 T4 = transl(15, 0, 0);	% and destination
-T = ctraj(T3, T4, 20); % compute a Cartesian path
+T = ctraj(T3, T4, 2); % compute a Cartesian path
 p2 = bot.ikine(T,q,M); 
 
-% bot.plot(p2)
+if DEBUG == 1
+    bot.plot(p2)
+end
 
 H=p2.*(180/(pi))
 

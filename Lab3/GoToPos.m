@@ -15,7 +15,7 @@ end
 
 T1 = transl(0, 15, 0);  % define the start point
 T2 = transl(A(2), A(1), 0);	% and destination
-T = ctraj(T1, T2, 20); % compute a Cartesian path
+T = ctraj(T1, T2, 2); % compute a Cartesian path
 p1 = bot.ikine(T,q,M); 
 
 % bot.plot(p1)

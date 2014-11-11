@@ -1,4 +1,4 @@
-function CommStatus = move_dynamixel_direct(id, position);
+function [] = move_dynamixel_direct(id, position);
     %% Setting up the dynamixel
 %     loadlibrary('dynamixel', 'dynamixel.h');
 %     DEFAULT_PORTNUM = 3;

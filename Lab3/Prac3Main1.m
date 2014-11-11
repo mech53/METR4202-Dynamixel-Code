@@ -162,6 +162,10 @@ for i = 1:order(1)
             
             move_dynamixel_steps(GoToPos([x, y]));
             %   Drop the condiment in the cup
+            move_dynamixel_angles(VCUP, 90);
+            pause(1);
+            wiggleit(VCUP);
+            
             move_dynamixel_steps(ReturnToPos([x, y]));
 
             if cup(3)+cup(4)+cup(5) == 0

@@ -23,10 +23,11 @@ end
 
 sortedOrder = sortrows(sortedOrder,-7);
 
-
+%Declares for motors, so it is easier to know which motor you are talking
+%to
 PISTON = 1;
-ELBOW1 = 2;
-ELBOW2 = 3;
+ELBOW1 = 3;
+ELBOW2 = 2;
 VCUP = 4;
 
 
@@ -59,6 +60,8 @@ q=[(0)*(pi/180) (0)*(pi/180)];%Q IS THE ORIGIN MATRIX
 
 %% Cup Tracking Setup
 
+
+[x_glass, y_glass] = glasslocation(detector, image);
 
 
 %% Fiducial Setup
@@ -165,7 +168,7 @@ for i = 1:order(1)
             move_dynamixel_angles(VCUP, 90);
             pause(1);
             wiggleit(VCUP);
-            
+            pause(1);            
             move_dynamixel_steps(ReturnToPos([x, y]));
 
             if cup(3)+cup(4)+cup(5) == 0
@@ -180,6 +183,8 @@ for i = 1:order(1)
             sound(y, Fs)
             declare = ['Drink ',cup(1),'is completed.'];
             disp(declare)
+            
+            move_dynamixel_steps(GoToPos([x_glass, y_glass]));
             
             state = 1;
     end

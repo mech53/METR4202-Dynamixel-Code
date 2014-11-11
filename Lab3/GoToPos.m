@@ -7,7 +7,9 @@ function [ H ] = GoToPos( A )
 %There is a conflit between the dynamixel library and the rvctools library,
 %this readds the rvctools library for use, while it is removed at the end
 %of this function.
-run('C:\Users\Spencer\Documents\Lab3GitHub\METR4202-Dynamixel-Code\Lab3\rvctools\startup_rvc.m');
+spencer_run = 'C:\Users\Spencer\Documents\Lab3GitHub\METR4202-Dynamixel-Code\Lab3\rvctools\startup_rvc.m';
+dylan_run = 'C:\Users\Dylan\Dropbox\4202_group1\Lab3\Lab3\rvctools\startup_rvc.m';
+run(spencer_run);
 L1 = Link('d', 0, 'a', 15, 'alpha', 0);
 L2 = Link('d', 0, 'a', 11.5, 'alpha', 0);
 bot = SerialLink([L1 L2], 'name', 'peter2')
@@ -30,11 +32,14 @@ p1 = bot.ikine(T,q,M);
 % bot.plot(p1)
  
 H=p1.*(180/(pi))
-rmpath('C:\Users\Spencer\Documents\Lab3GitHub\METR4202-Dynamixel-Code\Lab3\rvctools\robot');
+spencer = 'C:\Users\Spencer\Documents\Lab3GitHub\METR4202-Dynamixel-Code\Lab3\rvctools\robot';
+dylan = 'C:\Users\Dylan\Dropbox\4202_group1\Lab3\Lab3\rvctools\robot';
+warning('off', 'MATLAB:rmpath:DirNotFound')
+rmpath(spencer);
 
-%% Once this function finishes a new command will be sent to the motor, to 
-%%stop this from happening while the motor is already moving this section 
-%%waits for the motors to all be still.
+% Once this function finishes a new command will be sent to the motor, to 
+% stop this from happening while the motor is already moving this section 
+% waits for the motors to all be still.
 
 speeds = 256;
 

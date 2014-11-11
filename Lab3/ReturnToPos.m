@@ -2,6 +2,10 @@ function [ H ] = Untitled2( A )
 %% This function finds the angles that ELBOW1 and ELBOW2 need to be at to
 %%return to the 'calibration point' from point A.
 
+spencer_run = 'C:\Users\Spencer\Documents\Lab3GitHub\METR4202-Dynamixel-Code\Lab3\rvctools\startup_rvc.m';
+dylan_run = 'C:\Users\Dylan\Dropbox\4202_group1\Lab3\Lab3\rvctools\startup_rvc.m';
+run(spencer_run);
+
 L1 = Link('d', 0, 'a', 15, 'alpha', 0);
 L2 = Link('d', 0, 'a', 11.5, 'alpha', 0);
 bot = SerialLink([L1 L2], 'name', 'peter2')
@@ -23,6 +27,11 @@ p2 = bot.ikine(T,q,M);
 
 
 H=p2.*(180/(pi))
+spencer = 'C:\Users\Spencer\Documents\Lab3GitHub\METR4202-Dynamixel-Code\Lab3\rvctools\robot';
+dylan = 'C:\Users\Dylan\Dropbox\4202_group1\Lab3\Lab3\rvctools\robot';
+warning('off', 'MATLAB:rmpath:DirNotFound')
+rmpath(spencer);
+
 
 %% Once this function finishes a new command will be sent to the motor, to 
 %%stop this from happening while the motor is already moving this section 

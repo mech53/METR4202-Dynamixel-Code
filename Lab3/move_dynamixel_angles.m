@@ -16,8 +16,6 @@ if theta < 0
     theta = 0;
 end
 
-theta
-
 m = 1023/300;   %   bits per degree
 
 move_dynamixel_direct(id, m*theta);

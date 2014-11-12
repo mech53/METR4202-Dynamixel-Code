@@ -1,4 +1,8 @@
 function set_motor_torques
+%   Set a default value for the position
+global lastpos 
+lastpos = [5 15];
+
 %   Set up the path we have to remove - ignore the warning, if the
 %   path is already removed
 disp('The library has to be loaded :(')
@@ -20,7 +24,7 @@ calllib('dynamixel', 'dxl_write_word', 2, 34, 256)
 calllib('dynamixel', 'dxl_write_word', 3, 34, 256) 
 calllib('dynamixel', 'dxl_write_word', 4, 34, 1023) 
 % calllib('dynamixel', 'dxl_write_word', 1, 32, 150)
-% calllib('dynamixel', 'dxl_write_word', 2, 32, 150)
+calllib('dynamixel', 'dxl_write_word', 2, 32, 128)
 % calllib('dynamixel', 'dxl_write_word', 3, 32, 150)
 % calllib('dynamixel', 'dxl_write_word', 4, 32, 350)
 

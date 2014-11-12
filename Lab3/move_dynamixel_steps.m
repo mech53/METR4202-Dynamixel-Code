@@ -1,5 +1,4 @@
 function move_dynamixel_steps(vector)
-tic
 number_of_steps = size(vector);
 
 for i=1:number_of_steps(1)
@@ -9,5 +8,4 @@ for i=1:number_of_steps(1)
     pause(0.05)
 end
 % pause(1);
-toc
 end

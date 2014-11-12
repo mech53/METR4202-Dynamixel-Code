@@ -29,7 +29,10 @@ if ~libisloaded('dynamixel')
 end
 
 %   Execute the movement.
-calllib('dynamixel', 'dxl_write_word', 1, 30, 600);
+calllib('dynamixel', 'dxl_write_word', 1, 30, 750);
+pause(1)
+calllib('dynamixel', 'dxl_write_word', 1, 30, 850);
+
 
 %   Deal with waiting until it's done moving.
 

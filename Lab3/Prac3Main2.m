@@ -195,7 +195,7 @@ for i = 1:order(1)
             state = 4;
             
         case 4
-            %%  REVISE THIS VOSS AND CODY
+            %%  Finding cups function, also ignores used cups
 
             [nextId,everything] = multiObjectTracking_HC_new(Videoclr,videoPlayer,tracks,nextId);
             selectedCups_XY(:,1) = metric(xyzPoints,everything(:,1:2));

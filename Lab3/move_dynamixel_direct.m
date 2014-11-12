@@ -35,11 +35,11 @@ calllib('dynamixel', 'dxl_write_word', id, 30, position);
 
 speeds = 256;
 
-while(speeds>0) 
-    calllib('dynamixel', 'dxl_read_word', 1, 46);
-    speeds = (calllib('dynamixel', 'dxl_read_word', 1, 46)+calllib('dynamixel', 'dxl_read_word', 2, 46)+ ...
-        calllib('dynamixel', 'dxl_read_word', 3, 46)+calllib('dynamixel', 'dxl_read_word', 4, 46));
-end
+% while(speeds>0) 
+%     calllib('dynamixel', 'dxl_read_word', 1, 46);
+%     speeds = (calllib('dynamixel', 'dxl_read_word', 1, 46)+calllib('dynamixel', 'dxl_read_word', 2, 46)+ ...
+%         calllib('dynamixel', 'dxl_read_word', 3, 46)+calllib('dynamixel', 'dxl_read_word', 4, 46));
+% end
 
 
 end

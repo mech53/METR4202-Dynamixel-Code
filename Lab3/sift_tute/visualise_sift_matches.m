@@ -6,7 +6,6 @@ function [ x, y ] = visualise_sift_matches( I, J, f_I, f_J, matches )
 %   can be used to derive the transform from I to J using cp2tform.
     
     [merged, tform] = merge_images(I, J);
-    
 %     imshow(imsc(merged));
     
     av_i_pt = [0; 0];

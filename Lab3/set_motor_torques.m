@@ -16,13 +16,20 @@ res = calllib('dynamixel', 'dxl_initialize', DEFAULT_PORTNUM, DEFAULT_BAUDNUM);
 
 %   Now we can continue.
 
-calllib('dynamixel', 'dxl_write_word', 1, 34, 256) 
-calllib('dynamixel', 'dxl_write_word', 2, 34, 256) 
-calllib('dynamixel', 'dxl_write_word', 3, 34, 256) 
+calllib('dynamixel', 'dxl_write_word', 1, 34, 200) 
+calllib('dynamixel', 'dxl_write_word', 2, 34, 200) 
+calllib('dynamixel', 'dxl_write_word', 3, 34, 200) 
 calllib('dynamixel', 'dxl_write_word', 4, 34, 1023) 
 % calllib('dynamixel', 'dxl_write_word', 1, 32, 150)
 calllib('dynamixel', 'dxl_write_word', 2, 32, 128)
 % calllib('dynamixel', 'dxl_write_word', 3, 32, 150)
 % calllib('dynamixel', 'dxl_write_word', 4, 32, 350)
+
+% calllib('dynamixel', 'dxl_write_byte', 1, 28, 128)
+% calllib('dynamixel', 'dxl_write_byte', 1, 29, 128)
+% calllib('dynamixel', 'dxl_write_byte', 2, 28, 128)
+% calllib('dynamixel', 'dxl_write_byte', 2, 29, 128)
+% calllib('dynamixel', 'dxl_write_byte', 3, 28, 128)
+% calllib('dynamixel', 'dxl_write_byte', 3, 29, 128)
 
 end

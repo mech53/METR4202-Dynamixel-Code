@@ -42,7 +42,7 @@ nextId = Nid;
     displayTrackingResults();
     
 
-    disp(bboxes(:,1:2))
+    %disp(bboxes(:,1:2))
     
     Radiis = bboxes(:,3)./2;
                 
@@ -68,8 +68,9 @@ nextId = Nid;
                 everything(inde,4) = medium_counter;
             end
         end
-    
-    %disp(everything)
+
+        
+        
     
     % check that the videoplayer is still open
     %runLoop = isOpen(videoPlayer);
@@ -93,7 +94,7 @@ nextId = Nid;
         max_radius = 40;
         
         % search the image
-        [centroids,radii,metrics]=imfindcircles(Igf,[min_radius, max_radius],'sensitivity',0.9);
+        [centroids,radii,metrics]=imfindcircles(Igf,[min_radius, max_radius],'sensitivity',0.91);
 
         % turns the centroids into a box for display
         s = size(centroids);

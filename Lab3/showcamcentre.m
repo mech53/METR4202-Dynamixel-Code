@@ -1,6 +1,6 @@
 function A = showcamcentre()
 
-Videoclr = videoinput('kinect',1);
+Videoclr = videoinput('kinect',2);
 preview(Videoclr)
 
 videoFrame = getsnapshot(Videoclr);
@@ -17,7 +17,7 @@ runLoop = true;
     % Detect moving objects, and track them across video frames.
     while runLoop
         frame = getsnapshot(Videoclr);
-        %frame = decorrstretch(frame,'Tol',0.01); % only for the depth map
+        frame = decorrstretch(frame,'Tol',0.01); % only for the depth map
         
         centre = [320,240,3];
         

@@ -17,7 +17,7 @@ Ib = single(Ib);
 
 %% Get the matches
 
-[matches, scores] = vl_ubcmatch(da, db, 3);
+[matches, scores] = vl_ubcmatch(da, db, 1.0);
 
 [x, y] = visualise_sift_matches(imresize(Iaorig, 0.2), ...
     imresize(Iborig, 0.2), fa, fb, matches);

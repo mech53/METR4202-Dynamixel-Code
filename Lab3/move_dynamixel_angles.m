@@ -3,7 +3,7 @@
 id_3_base = 150;
 
 %   Centre angle of the arm motor
-id_2_base = 130;
+id_2_base = 150;
 
 %   Change theta to the relative angle
 if id == 2

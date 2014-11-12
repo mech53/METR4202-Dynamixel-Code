@@ -1,4 +1,4 @@
-function glasslocation3(detector,image)
+function xy = glasslocation3(detector,image)
 
     close all
 
@@ -22,5 +22,6 @@ function glasslocation3(detector,image)
     disp(bbox)
     detectedImg = insertObjectAnnotation(image, 'rectangle', bbox, 'glass');
     figure; imshow(detectedImg);
-
+    
+    xy = round(bbox(1,1:2) - bbox(1,3:4)./2);
 end 

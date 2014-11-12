@@ -1,36 +1,41 @@
-function multiObjectTracking_HC()
+function multiObjectTracking_HC(xyzPoints)
 
-
-
-% Create a video file reader.
+% Create the colour video object
 Videoclr = videoinput('kinect',1);
+
+% open a preview of the video object, this speeds up image capture
 preview(Videoclr)
 
-% Create two video players, one to display the video,
-% and one to display the foreground mask.
+% set up a video player to display tracked objects
 videoFrame = getsnapshot(Videoclr);
 frameSize = size(videoFrame);
 
 % Create the video player object.
 videoPlayer = vision.VideoPlayer('Position', [100 100 [frameSize(2), frameSize(1)]+30]);
 
-% Create System objects for foreground detection and blob analysis
+% Create an empty array of tracks.
+tracks = initializeTracks();
 
-detector = vision.CascadeObjectDetector('smallcupDetectoraxon2.xml');
+% ID of the next track
+nextId = 1;
 
-tracks = initializeTracks(); % Create an empty array of tracks.
-
-nextId = 1; % ID of the next track
-
+% we run the loop while the video player is open, initialy true
 runLoop = true;
-
 
 % Detect moving objects, and track them across video frames.
 while runLoop
     tic
+    
+    % read in a frame from the video player
     frame = readFrame(Videoclr);
+    
+    % detects cups in the frame
     [centroids, bboxes] = detectObjects(frame);
+    
+    % predict the new cup location
     predictNewLocationsOfTracks();
+    
+    % if cups have been found update the tracks
     if ~isempty(centroids)
         [assignments, unassignedTracks, unassignedDetections] = ...
             detectionToTrackAssignment();
@@ -40,14 +45,45 @@ while runLoop
         deleteLostTracks();
         createNewTracks();
     end
-
+    % dispaly the updated tracks in the video player
     displayTrackingResults();
+    
+
+    %disp(bboxes(:,1:2))
+    Radiis = bboxes(:,3)./2;
+                
+
+        large_counter = 0;
+        medium_counter = 0;
+
+        everything = zeros(length(Radiis),4);
+
+        for inde = 1:length(Radiis)
+
+            everything(inde,1:2) = bboxes(inde,1:2);
+
+            if Radiis(inde) > 26
+                large_counter = large_counter + 1;
+                %name(ind) = cellstr(strcat('large',int2str(large_counter)));
+                everything(inde,3) = 2;
+                everything(inde,4) = large_counter;
+            else
+                medium_counter = medium_counter + 1;
+                %name(ind) = cellstr(strcat('medium',int2str(medium_counter)));
+                everything(inde,3) = 1;
+                everything(inde,4) = medium_counter;
+            end
+        end
+    Ev = metric(xyzPoints,everything(:,1:2));
+    disp(Ev)
+    
+    % check that the videoplayer is still open
     runLoop = isOpen(videoPlayer);
     toc
 end
+% just a bit of clean up
 stoppreview(Videoclr); closepreview
 release(videoPlayer);
-release(detector);
 
     function tracks = initializeTracks()
         % create an empty array of tracks
@@ -61,19 +97,25 @@ release(detector);
     end
 
     function frame = readFrame(video_object)
+        % gets the current frame from the video object
         frame = getsnapshot(video_object);
     end
 
     function [centroids, bboxes] = detectObjects(frame)
+        % finds cirlces in an image given a rand of radii
         
-        
+        % slightly blur the image to make shadows ect. be less identifiable
         K = fspecial('gaussian');
         Igf = imfilter(frame, K);
+        
+        % set the desired radii (in pixels)
+        min_radius = 20;
+        max_radius = 40;
+        
+        % search the image
+        [centroids,radii,metrics]=imfindcircles(Igf,[min_radius, max_radius],'sensitivity',0.9);
 
-        min_radius = 10;
-        max_radius = 50;
-
-        [centroids,radii,metric]=imfindcircles(Igf,[min_radius, max_radius]);
+        % turns the centroids into a box for display
         s = size(centroids);
         bboxes = zeros(s(1),4);
         for i = 1:s(1)
@@ -94,25 +136,12 @@ release(detector);
             bboxes(i,4) = diameter;
 
         end
-        
-        
-        %[centroids, bboxes] = findcircles(frame);
-        % Detect foreground.
-        %{
-        bboxes = detector.step(frame);
-        s = size(bboxes);
-        centroids = [];
-        for i = 1:s(1)
-            cx = bboxes(i,1) - bboxes(i,3)/2;
-            cy = bboxes(i,2) - bboxes(i,4)/2;
-            centroids = [centroids;cx,cy];
-        end
-        %}
-
 
     end
 
     function predictNewLocationsOfTracks()
+        % predicts the location of centroids using a kalman filter
+            
         for i = 1:length(tracks)
             bbox = tracks(i).bbox;
 
@@ -122,6 +151,8 @@ release(detector);
             % Shift the bounding box so that its center is at
             % the predicted location.
             predictedCentroid = predictedCentroid - bbox(3:4) / 2;
+            
+            % update tracks
             tracks(i).bbox = [predictedCentroid, bbox(3:4)];
         end
     end
@@ -132,8 +163,6 @@ release(detector);
 
         nTracks = length(tracks);
         nDetections = size(centroids, 1);
-        disp(size(centroids))
-        disp(centroids(1,:))
         % Compute the cost of assigning each detection to each track.
         cost = zeros(nTracks, nDetections);
         for i = 1:nTracks
@@ -147,6 +176,7 @@ release(detector);
     end
 
     function updateAssignedTracks()
+        % updates the assigned tracks
         numAssignedTracks = size(assignments, 1);
         for i = 1:numAssignedTracks
             trackIdx = assignments(i, 1);
@@ -173,6 +203,7 @@ release(detector);
     end
 
     function updateUnassignedTracks()
+        % updates the unassigned tracks
         for i = 1:length(unassignedTracks)
             ind = unassignedTracks(i);
             tracks(ind).age = tracks(ind).age + 1;
@@ -183,9 +214,11 @@ release(detector);
 
     function deleteLostTracks()
         if isempty(tracks)
+            % if no tracks have been found do nothing
             return;
         end
-
+        
+        % set thresholds to determine if a track needs deletion
         invisibleForTooLong = 15;
         ageThreshold = 8;
 
@@ -233,13 +266,13 @@ release(detector);
     end
 
     function displayTrackingResults()
-        % Convert the frame and the mask to uint8 RGB.
+        % Convert the frame to uint8 RGB.
         frame = im2uint8(frame);
 
         minVisibleCount = 8;
         if ~isempty(tracks)
 
-            % Noisy detections tend to result in short-lived tracks.
+            % False detections tend to result in short-lived tracks.
             % Only display tracks that have been visible for more than
             % a minimum number of frames.
             reliableTrackInds = ...
@@ -259,12 +292,28 @@ release(detector);
                 % which we display the predicted rather than the actual
                 % location.
                 labels = cellstr(int2str(ids'));
+
+                Radiis = bboxes(:,3)./2;
+                %disp(Radiis)
+
+                large_counter = 0;
+                medium_counter = 0;
+                for ind = 1:length(Radiis)
+                    if Radiis(ind) > 26
+                        large_counter = large_counter + 1;
+                        name(ind) = cellstr(strcat('large',int2str(large_counter)));
+                    else
+                        medium_counter = medium_counter + 1;
+                        name(ind) = cellstr(strcat('medium',int2str(medium_counter)));
+                    end
+                end
+                
                 predictedTrackInds = ...
                     [reliableTracks(:).consecutiveInvisibleCount] > 0;
                 isPredicted = cell(size(labels));
                 isPredicted(predictedTrackInds) = {' predicted'};
+                labels = strcat(labels,name');
                 labels = strcat(labels, isPredicted);
-
                 % Draw the objects on the frame.
                 frame = insertObjectAnnotation(frame, 'rectangle', ...
                     bboxes, labels);
@@ -274,6 +323,13 @@ release(detector);
 
         % Display the mask and the frame.
         step(videoPlayer, frame);
+        %cents(:,2) = bboxes(:,1:2);
+        %cents(:,3) = names;
+        
+        % note to self the point here was to make a returnable (thats a
+        % word now) item that had the xy loactions and the name, will need
+        % to be a struct because names are strings... or change names to a
+        % number some how
     end
 
 

@@ -42,6 +42,7 @@ state = 1; %model is created
 %% Cup Tracking Setup
 
 % move arm out of the way
+set_motor_torques
 move_dynamixel_angles(2, 0);
 move_dynamixel_angles(3,80);
 pause(5)

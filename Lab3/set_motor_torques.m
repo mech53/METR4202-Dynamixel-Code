@@ -1,19 +1,16 @@
 function set_motor_torques
 %   Set a default value for the position
-global lastpos 
-lastpos = [5 15];
-
 %   Set up the path we have to remove - ignore the warning, if the
 %   path is already removed
 disp('The library has to be loaded :(')
 spencer = 'C:\Users\Spencer\Documents\Lab3GitHub\METR4202-Dynamixel-Code\Lab3\rvctools\robot';
 dylan = 'C:\Users\Dylan\Dropbox\4202_group1\Lab3\Lab3\rvctools\robot';
 warning('off', 'MATLAB:rmpath:DirNotFound')
-rmpath(dylan);
+rmpath(spencer);
 
 %   Load the library
 loadlibrary('dynamixel', 'dynamixel.h');
-DEFAULT_PORTNUM = 3;
+DEFAULT_PORTNUM = 5;
 DEFAULT_BAUDNUM = 1;
 res = calllib('dynamixel', 'dxl_initialize', DEFAULT_PORTNUM, DEFAULT_BAUDNUM);
 

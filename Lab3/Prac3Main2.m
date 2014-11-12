@@ -36,26 +36,8 @@ VCUP = 4;
 %% Model Creation
 %CLEAR
 clf
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%        SETUP ROBOT WITH 'LEGO UNITS' AS MEASUREMENT   %%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-L1 = Link('d', 0, 'a', 10, 'alpha', 0);
-L2 = Link('d', 0, 'a', 10, 'alpha', pi/2);
-%L3 = Link('d', 0, 'a', 10, 'alpha', 0);
-bot = SerialLink([L1 L2], 'name', 'peter2');
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 state = 1; %model is created
-
-%%%%FORWARD KINEMATICS
-%%ENTER THREE ROTATIONS IN RADIANS 
-%IT RETURNS FULL ROTATION MATRIX
-%j=bot.fkine([(112)*(pi/180) (29)*(pi/180) 107*(pi/180)])
-
-M=[1 1 0 0 0 0];%MASKING ARRAY USED TO IGNORE OTHER AXIS
-%WE ONLY USE 3 AXIS OF FREEDOM
-
-q=[(0)*(pi/180) (0)*(pi/180)];%Q IS THE ORIGIN MATRIX
 
 %% Cup Tracking Setup
 
@@ -103,8 +85,7 @@ end
 %% Fiducial Setup
 %   Take an image and save it as snapshot.mat file
 image = videoFrame;
-save('snapshot.mat',image)
-% % % % % VOSS AND CODY MAKE THESE IN 3D
+save('snapshot.mat','image')
 
 %   Get the x and y coordinates of each fiducial
 [x_acd, y_acd] = find_coasters('acd_marker.mat', 'snapshot.mat');
@@ -118,7 +99,7 @@ XY_tea = metric(xyzPoints,[x_tea, y_tea]);
 XY_cof = metric(xyzPoints,[x_cof, y_cof]);
 
 %% Glass Setup
-disp('please place the glass')
+disp('Please place the glass... :)')
 pause(10)
 detector = vision.CascadeObjectDetector('glass5.xml');
 % find the glass in the image
@@ -164,30 +145,27 @@ for i = 1:order(1)
                     
                 case 1
                     %Go to Coffee
-                    move_dynamixel_steps(GoToPos([x_cof, y_cof])); 
+                    move_dynamixel_steps(GoToPos(XY_cof)); 
                     %GoToPos returns the angles needed for move_dynamixel_steps 
                     
                     disp('Please drop coffee!')
-                    pause(5)
-                    move_dynamixel_steps(ReturnToPos([x_cof, y_cof]));
+                    pause(3)
                     condimentFlag = 0;
                 case 2
                     %Go to Tea
-                    move_dynamixel_steps(GoToPos([x_tea, y_tea]));
+                    move_dynamixel_steps(GoToPos(XY_tea));
                     %GoToPos returns the angles needed for move_dynamixel_steps
                     
                     disp('Please drop tea!')
-                    pause(5)
-                    move_dynamixel_steps(ReturnToPos([x_tea, y_tea]));
+                    pause(3)
                     condimentFlag = 0;
+                    
                 case 3
                     %Go to Sugar
-                    move_dynamixel_steps(GoToPos([x_sug, y_sug]));
-                    %GoToPos returns the angles needed for move_dynamixel_steps
+                    move_dynamixel_steps(GoToPos([XY_sug]));
                     
                     disp('Please drop sugar!')
-                    pause(5)
-                    move_dynamixel_steps(ReturnToPos([x_sug, y_sug]));
+                    pause(3)
                     %GoToPos returns the angles needed for move_dynamixel_steps
                     
                     condimentFlag = 0;
@@ -219,15 +197,11 @@ for i = 1:order(1)
             state = 5;
         case 5
             %Move arm to cup, and drop condiment in cup
-            
-            %VOSS AND CODY I NEED THESE X Y COORDINATES
-            
+                        
             move_dynamixel_steps(GoToPos(currentCup_XY));
             %   Drop the condiment in the cup
-            move_dynamixel_angles(VCUP, 90);
+            dropit(4);
             
-            move_dynamixel_steps(ReturnToPos([x, y]));
-
             if cup(3)+cup(4)+cup(5) == 0
                 state = 6;
             else
@@ -238,7 +212,7 @@ for i = 1:order(1)
             %Declare Cup Finished
             load gong.mat
             sound(y, Fs)
-            declare = ['Drink ',cup(1),'is completed.'];
+            declare = strcat('Drink_' , int2str(cup(1)), ' is completed.')
             disp(declare)
             
             state = 1;
